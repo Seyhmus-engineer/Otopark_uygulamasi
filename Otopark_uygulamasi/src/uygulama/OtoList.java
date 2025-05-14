@@ -1,6 +1,5 @@
 package uygulama;
 
-// Çift yönlü dairesel bağlı liste yapısı
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -8,7 +7,11 @@ import java.util.Scanner;
 
 public class OtoList {
 
-    Scanner k = new Scanner(System.in);
+    public Scanner k;
+
+    public OtoList(Scanner k) {
+        this.k = k;
+    }
 
     OtoSinif bas = null;
     OtoSinif son = null;
@@ -20,10 +23,9 @@ public class OtoList {
     String cikis;
     long dakika;
     double ucret;
-    long ToplamUcret = 0;
+    public long ToplamUcret = 0;
 
-    void ekle() {
-
+    public void ekle() {
         System.out.print("Otopark a giris yapacak aracın plakası: ");
         plaka = k.nextLine();
         System.out.print("Aracin giris zamanı(ss:dd)            : ");
@@ -34,29 +36,25 @@ public class OtoList {
         if (bas == null) {
             bas = arac;
             son = arac;
-
             bas.next = son;
             son.back = bas;
             bas.back = son;
             son.next = bas;
-            System.out.println(plaka + " plakalı arac otoparka eklendi");
         } else {
             son.next = arac;
             arac.back = son;
             son = arac;
             son.next = bas;
             bas.back = son;
-            System.out.println(plaka + " plakalı arac otoparka eklendi");
         }
 
+        System.out.println(plaka + " plakalı arac otoparka eklendi");
     }
 
-    void sil() throws ParseException {
-
+    public void sil() throws ParseException {
         if (bas == null) {
             System.out.println("Otopark bos!");
         } else {
-
             System.out.print("Otopark a cikis yapacak aracın plakası: ");
             plaka = k.nextLine();
             System.out.print("Aracin cikis zamanı(ss:dd)            : ");
@@ -75,7 +73,6 @@ public class OtoList {
                 System.out.println(plaka + " plakalı arac otoparktan ayrildi");
             } else {
                 temp = bas;
-
                 while (temp != son) {
                     if (temp.plaka.equals(plaka)) {
                         ucrethesapla(temp, cikis);
@@ -97,19 +94,15 @@ public class OtoList {
         }
     }
 
-    void ucrethesapla(OtoSinif temp3, String cikis2) throws ParseException {
-
+    private void ucrethesapla(OtoSinif temp3, String cikis2) throws ParseException {
         giris = temp3.giris;
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        Date d1 = sdf.parse(giris);
+        Date d2 = sdf.parse(cikis2);
 
-        Date d1, d2;
-        d1 = sdf.parse(giris);
-        d2 = sdf.parse(cikis);
-
-        dakika = d2.getTime() - d1.getTime();
-        dakika = dakika / 60000;
+        dakika = (d2.getTime() - d1.getTime()) / 60000;
         if ((dakika / 60) < 1) {
-            ucret = 0 * (dakika / 60);
+            ucret = 0;
             System.out.println("1 saat den az kaldığınız için ücret talep etmiyoruz");
         } else if ((dakika / 60) >= 1 && (dakika / 60) <= 2) {
             ucret = 35 * (dakika / 60);
@@ -125,8 +118,7 @@ public class OtoList {
         ToplamUcret += ucret;
     }
 
-    void yazdir() {
-
+    public void yazdir() {
         if (bas == null) {
             System.out.println("Otoparkta arac yok");
         } else {
@@ -139,5 +131,4 @@ public class OtoList {
             System.out.println(temp.plaka + "\t\t " + temp.giris);
         }
     }
-
 }
